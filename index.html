@@ -104,6 +104,24 @@
         .hidden-custom {
             display: none !important;
         }
+
+        /* --- CORREÇÃO IPHONE: CLASSES ESPECÍFICAS PARA O VÍDEO --- */
+        /* Substitui display:none por visibility:hidden para que o iPhone carregue o vídeo em background */
+        .invisible-modal {
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
+            display: flex !important; /* Mantém no layout tree */
+        }
+        
+        .visible-modal {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 50;
+            display: flex !important;
+        }
         
         ::selection {
             background-color: #fed7aa; 
@@ -405,7 +423,8 @@
     </div>
 
     <!-- TELA 4: MODAL VIDEO LOCAL -->
-    <div id="video-modal" class="hidden-custom fixed inset-0 z-50 flex items-center justify-center p-4 bg-orange-900/40 backdrop-blur-sm transition-opacity duration-300">
+    <!-- CORREÇÃO IPHONE: Usando classe invisible-modal ao invés de hidden-custom -->
+    <div id="video-modal" class="invisible-modal fixed inset-0 flex items-center justify-center p-4 bg-orange-900/40 backdrop-blur-sm transition-opacity duration-300">
         <div id="video-modal-content" class="bg-black w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden relative border-4 border-white transform scale-90 opacity-0 transition-all duration-300 flex flex-col">
             
             <div class="relative w-full aspect-[9/16] bg-black">
@@ -413,7 +432,8 @@
                     <i data-lucide="x" width="24"></i>
                 </button>
                 
-                <!-- Video Player Local: Adicionado webkit-playsinline para iPhone -->
+                <!-- Video Player Local -->
+                <!-- Importante: O arquivo local.mp4 deve estar exatamente com esse nome (maiúsculas/minúsculas importam no GitHub Pages) -->
                 <video id="location-video" class="w-full h-full object-cover" controls playsinline webkit-playsinline preload="auto">
                     <source src="local.mp4" type="video/mp4">
                     Seu navegador não suporta o elemento de vídeo.
@@ -516,17 +536,23 @@
         }
 
         function openVideo() {
-            videoModal.classList.remove('hidden-custom');
+            // CORREÇÃO IPHONE: Trocando classes de visibilidade em vez de display
+            // Remove a classe invisivel
+            videoModal.classList.remove('invisible-modal');
+            videoModal.classList.add('visible-modal');
             
-            // CORREÇÃO IPHONE: Não tente zerar currentTime antes de tocar.
-            // O iPhone muitas vezes bloqueia ou falha se manipularmos o tempo de um vídeo não carregado.
-            
+            // Força o Safari a reconhecer o vídeo se ele estiver "dormindo"
+            if (locationVideo.readyState === 0) {
+                locationVideo.load();
+            }
+
+            // Tenta o play
             var playPromise = locationVideo.play();
             
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.log("Autoplay impedido pelo navegador (comum no iPhone se modo economia energia estiver ligado):", error);
-                    // O vídeo ainda estará lá com os controles nativos para o usuário clicar
+                    console.log("Autoplay impedido ou falha no load:", error);
+                    // O vídeo vai aparecer com o botão de play nativo, o usuário pode clicar manualmente
                 });
             }
 
@@ -540,8 +566,11 @@
             locationVideo.pause();
             videoModalContent.classList.remove('scale-100', 'opacity-100');
             videoModalContent.classList.add('scale-90', 'opacity-0');
+            
+            // Espera a animação para esconder
             setTimeout(() => {
-                videoModal.classList.add('hidden-custom');
+                videoModal.classList.remove('visible-modal');
+                videoModal.classList.add('invisible-modal');
             }, 300);
         }
 
