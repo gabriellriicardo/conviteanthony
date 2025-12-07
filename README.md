@@ -1,80 +1,62 @@
-🌞 Convite de Aniversário - 1ª Volta ao Sol
+# 🌞 Convite Interativo – Primeira Volta ao Sol
 
-"Minha primeira volta ao sol"
+### 🎉 Convite digital criado com amor para o 1º aninho do meu sobrinho, **Anthony Gabriel**
 
-Este projeto é muito especial: um convite digital interativo desenvolvido com carinho para celebrar o 1º aninho do meu sobrinho, Anthony Gabriel.
+Este repositório contém um convite digital totalmente interativo, desenvolvido especialmente para celebrar a primeira volta ao sol do meu sobrinho, Anthony Gabriel. 💛✨
 
-A ideia foi criar uma experiência lúdica e alegre para os convidados, fugindo dos convites estáticos tradicionais e trazendo animações, interatividade e facilidade para confirmar presença.
+A ideia foi transformar um simples convite em uma **experiência divertida, animada e cheia de vida**, trazendo:
 
-🎨 Sobre o Projeto
+* 🌟 Animações suaves e dinâmicas
+* 💌 Envelope interativo que se abre com confetes
+* 🎥 Modal personalizado com vídeo do local
+* 🎁 Lista de presentes com visual moderno
+* ⏳ Contagem regressiva para o grande dia
+* ☁️ Elementos flutuantes, sol animado e estética infantil acolhedora
 
-O site simula a entrega de um envelope digital. Ao "abrir" o convite, o usuário é surpreendido com uma chuva de confetes e as informações detalhadas da festa. O design é focado em tons quentes (amarelo e laranja) para combinar com o tema "Raio de Sol".
+Tudo pensado para encantar familiares e amigos desde o primeiro clique.
 
-✨ Funcionalidades
+---
 
-Envelope Interativo: Animação de "wiggle" (tremidinha) chamando atenção para o clique. Ao clicar, o envelope se abre com uma explosão de confetes 🎉.
+## 🚀 Tecnologias Utilizadas
 
-Contagem Regressiva: Um timer em tempo real contando dias, horas, minutos e segundos até a festa.
+* **HTML5**
+* **Tailwind CSS (CDN)**
+* **JavaScript**
+* **Lucide Icons**
+* **Canvas Confetti**
+* **Google Fonts**
+* Animações personalizadas com CSS
 
-Animações Fluidas: Uso de CSS puro e Tailwind para animações de flutuar (nuvens), girar (sol) e transições suaves de entrada.
+---
 
-Lista de Presentes (Modal): Sugestões de presentes que abrem em uma janela sobreposta (modal), sem sair da página.
+## 📂 Estrutura do Projeto
 
-Vídeo do Local: Integração de vídeo HTML5 para mostrar o local da festa diretamente no convite.
+* `index.html` – página principal com animações, interações e modal de vídeo
+* `anthony.gif` – GIF personalizado do personagem
+* `local.mp4` – vídeo do local da festa
+* `/favicon/` – ícones do projeto
+* Scripts integrados para animações, contagem regressiva e modais
 
-Confirmação via WhatsApp: Botão direto que redireciona para o WhatsApp para confirmar presença.
+---
 
-Totalmente Responsivo: Ajustado para funcionar perfeitamente em celulares (onde a maioria dos convidados acessará) e computadores.
+## 🎈 Sobre o Convite
 
-🛠️ Tecnologias Utilizadas
+O objetivo foi criar algo que transmitisse carinho e fosse além do tradicional — um convite que realmente deixasse os convidados animados para o evento.
+Cada detalhe, desde o solzinho animado até o selo do envelope, foi pensado para trazer leveza e alegria ao tema “**minha primeira volta ao sol**”.
 
-O projeto foi construído utilizando tecnologias web modernas, mantendo a leveza e a performance:
+---
 
-HTML5: Estrutura semântica.
+## 🖥️ Visualizar o Projeto
 
-Tailwind CSS (via CDN): Para estilização rápida, responsividade e animações personalizadas.
+Você pode hospedar este projeto no **GitHub Pages** ou rodar localmente abrindo o arquivo `index.html` no navegador.
 
-JavaScript (Vanilla): Lógica da contagem regressiva, controle dos modais e interação do envelope.
+---
 
-Canvas Confetti: Biblioteca leve para o efeito de confetes.
+## ❤️ Créditos
 
-Lucide Icons: Ícones modernos e vetoriais.
+Criado com muito amor, dedicação e criatividade para celebrar o 1º aniversário do meu sobrinho **Anthony Gabriel**.
+Esse convite é mais do que um projeto — é uma lembrança especial.
 
-Google Fonts: Tipografias Dancing Script (títulos), Quicksand (corpo) e Fredoka (detalhes).
+---
 
-🚀 Como Usar / Rodar o Projeto
-
-Como é um site estático, você não precisa de nenhum backend complexo.
-
-Clone este repositório:
-
-git clone [https://github.com/seu-usuario/nome-do-repositorio.git](https://github.com/seu-usuario/nome-do-repositorio.git)
-
-
-Abra o arquivo:
-Basta clicar duas vezes no arquivo index.html para abrir no seu navegador.
-
-Hospedagem (GitHub Pages)
-
-Este projeto está configurado para rodar perfeitamente no GitHub Pages.
-
-Vá nas Settings do repositório.
-
-Clique na aba Pages.
-
-Em Branch, selecione main (ou master) e salve.
-
-O link do seu convite estará disponível em instantes!
-
-📁 Estrutura de Arquivos
-
-/
-├── index.html          # Código principal
-├── anthony.gif         # GIF do personagem
-├── local.mp4           # Vídeo do local da festa
-├── favicon/            # Pasta com os ícones do site
-│   ├── favicon.ico
-│   ├── favicon-96x96.png
-│   ├── apple-touch-icon.png
-│   └── ...
-└── README.md           # Documentação
+Se quiser, posso criar também a **descrição para o repositório**, **tags**, **licença**, **print do projeto**, ou até gerar uma versão em inglês! ✨
