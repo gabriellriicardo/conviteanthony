@@ -2,24 +2,23 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Viewport ajustado para iPhone (viewport-fit=cover) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Convite Anthony Gabriel - 1 Aninho</title>
 
-    <!-- Favicon e Manifest -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="./favicon/favicon-96x96.png?v=2" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg?v=2" />
     <link rel="shortcut icon" href="./favicon/favicon.ico?v=2" />
     <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png?v=2" />
-    <meta name="apple-mobile-web-app-title" content="Convite " />
-    <link rel="manifest" href="./favicon/site.webmanifest?v=2" />
     
-    <!-- Tailwind CSS via CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Canvas Confetti (Para a explosão de alegria) -->
+    <!-- Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Google Fonts -->
@@ -28,49 +27,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
 
     <style>
-        /* Fontes personalizadas */
         .font-script { font-family: 'Dancing Script', cursive; }
         .font-body { font-family: 'Quicksand', sans-serif; }
         .font-bubbly { font-family: 'Fredoka', sans-serif; }
 
-        /* Animações CSS */
-        @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .animate-spin-slow {
-            animation: spin-slow 12s linear infinite;
-        }
+        /* Animações */
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 12s linear infinite; }
+        .animate-spin-slower { animation: spin-slow 60s linear infinite; }
 
-        .animate-spin-slower {
-            animation: spin-slow 60s linear infinite;
-        }
-
-        /* Animação de Flutuar (para nuvens e balões) */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-15px); }
         }
-
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        .animate-float-delay {
-            animation: float 7s ease-in-out infinite 1s;
-        }
-
-        /* Animação de "Wiggle" (Envelope tremendo) */
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        
         @keyframes wiggle {
             0%, 100% { transform: rotate(-3deg); }
             50% { transform: rotate(3deg); }
         }
+        .group:hover .animate-wiggle { animation: wiggle 0.5s ease-in-out infinite; }
 
-        .group:hover .animate-wiggle {
-            animation: wiggle 0.5s ease-in-out infinite;
-        }
-
-        /* Transições */
+        /* Utilitários de Transição */
         .fade-out-up {
             opacity: 0;
             transform: translateY(-50px) scale(0.9);
@@ -82,39 +60,29 @@
             animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Animação de entrada escalonada (Stagger) */
+        /* Staggers */
         .stagger-1 { animation-delay: 100ms; }
         .stagger-2 { animation-delay: 200ms; }
         .stagger-3 { animation-delay: 300ms; }
         .stagger-4 { animation-delay: 400ms; }
         .stagger-5 { animation-delay: 500ms; }
-        .stagger-6 { animation-delay: 600ms; } /* Novo delay */
+        .stagger-6 { animation-delay: 600ms; }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .hidden-custom {
-            display: none !important;
-        }
-
-        /* --- CORREÇÃO IPHONE: CLASSES ESPECÍFICAS PARA O VÍDEO --- */
-        /* Substitui display:none por visibility:hidden para que o iPhone carregue o vídeo em background */
+        .hidden-custom { display: none !important; }
+        
+        /* CORREÇÃO VÍDEO IPHONE */
         .invisible-modal {
             visibility: hidden;
             opacity: 0;
             pointer-events: none;
             z-index: -1;
-            display: flex !important; /* Mantém no layout tree */
+            display: flex !important;
         }
-        
         .visible-modal {
             visibility: visible;
             opacity: 1;
@@ -122,59 +90,41 @@
             z-index: 50;
             display: flex !important;
         }
-        
-        ::selection {
-            background-color: #fed7aa; 
-        }
 
-        /* --- CLASSE MÁGICA PARA REMOVER FUNDO BRANCO --- */
-        .remove-bg {
-            mix-blend-mode: darken;
-        }
+        .remove-bg { mix-blend-mode: darken; }
         
-        .gif-layer {
-            z-index: 20;
-            pointer-events: none; 
-        }
+        /* Ajuste do GIF para não bloquear cliques */
+        .gif-layer { z-index: 20; pointer-events: none; }
     </style>
 </head>
-<body class="min-h-screen bg-[#FFF9F0] font-sans overflow-hidden flex items-center justify-center relative selection:bg-orange-200">
+<!-- CORREÇÃO LAYOUT: min-h-[100dvh] usa a altura dinâmica do viewport mobile, ignorando a barra de endereço -->
+<!-- overflow-y-auto permite rolar se a tela for muito pequena (iPhone SE) -->
+<body class="min-h-[100dvh] bg-[#FFF9F0] font-sans overflow-x-hidden overflow-y-auto flex items-center justify-center relative selection:bg-orange-200 supports-[min-height:100dvh]:min-h-[100dvh]">
 
-    <!-- Background Decorativo Animado -->
-    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <!-- Blobs de cor -->
+    <!-- Background -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-yellow-200/40 rounded-full blur-[80px] mix-blend-multiply animate-pulse"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-orange-100/50 rounded-full blur-[100px] mix-blend-multiply animate-pulse" style="animation-delay: 2s;"></div>
         
-        <!-- Nuvens SVG Animadas -->
+        <!-- Nuvens -->
         <div class="absolute top-[10%] left-[5%] text-white/40 animate-float">
             <svg width="100" height="60" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5,19c-3.037,0-5.5-2.463-5.5-5.5c0-0.498,0.071-0.98,0.199-1.439C11.776,12.024,11.396,12,11,12 c-3.314,0-6,2.686-6,6v1h12.5H17.5z M20.5,19H18c0.041-0.327,0.088-0.648,0.088-1c0-2.438-1.745-4.471-4.045-5.071 C14.36,11.137,15.603,10,17,10c2.761,0,5,2.239,5,5C22,17.209,21.328,19,20.5,19z"/></svg>
-        </div>
-        <div class="absolute top-[20%] right-[10%] text-white/30 animate-float-delay transform scale-150">
-            <svg width="120" height="70" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5,19c-3.037,0-5.5-2.463-5.5-5.5c0-0.498,0.071-0.98,0.199-1.439C11.776,12.024,11.396,12,11,12 c-3.314,0-6,2.686-6,6v1h12.5H17.5z M20.5,19H18c0.041-0.327,0.088-0.648,0.088-1c0-2.438-1.745-4.471-4.045-5.071 C14.36,11.137,15.603,10,17,10c2.761,0,5,2.239,5,5C22,17.209,21.328,19,20.5,19z"/></svg>
-        </div>
-        <div class="absolute bottom-[20%] left-[15%] text-orange-100/60 animate-float transform scale-75">
-             <svg width="80" height="50" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5,19c-3.037,0-5.5-2.463-5.5-5.5c0-0.498,0.071-0.98,0.199-1.439C11.776,12.024,11.396,12,11,12 c-3.314,0-6,2.686-6,6v1h12.5H17.5z M20.5,19H18c0.041-0.327,0.088-0.648,0.088-1c0-2.438-1.745-4.471-4.045-5.071 C14.36,11.137,15.603,10,17,10c2.761,0,5,2.239,5,5C22,17.209,21.328,19,20.5,19z"/></svg>
         </div>
     </div>
 
     <!-- TELA 1: ENVELOPE -->
-    <div id="envelope-screen" class="z-10 flex flex-col items-center justify-between w-full h-full min-h-screen py-8 px-4 relative max-w-lg mx-auto transition-all duration-500">
+    <!-- CORREÇÃO: pb-20 adiciona espaço no rodapé para o boneco não cortar no iPhone -->
+    <div id="envelope-screen" class="z-10 flex flex-col items-center justify-between w-full h-full min-h-[100dvh] py-8 px-4 relative max-w-lg mx-auto transition-all duration-500 pb-24">
         
-        <!-- Header com Sol e Texto -->
-        <div class="flex flex-col items-center justify-center mt-4 animate-float">
+        <!-- Header -->
+        <div class="flex flex-col items-center justify-center mt-4 animate-float shrink-0">
             <div class="relative w-72 h-72 flex items-center justify-center">
                 <svg viewBox="0 0 200 200" class="absolute w-full h-full overflow-visible">
                     <path id="curve" d="M 20,100 A 80,80 0 0,1 180,100" fill="transparent" />
-                    
                     <text width="200" class="fill-orange-400 font-bubbly" style="font-size: 16px; letter-spacing: 0.1em; font-weight: 600;">
-                        <textPath href="#curve" startOffset="50%" text-anchor="middle">
-                            Minha primeira volta ao sol
-                        </textPath>
+                        <textPath href="#curve" startOffset="50%" text-anchor="middle">Minha primeira volta ao sol</textPath>
                     </text>
-                    
                     <g class="origin-center animate-spin-slow" style="transform-origin: 100px 100px;">
-                        <!-- Raios do sol -->
                         <line x1="100" y1="50" x2="100" y2="30" stroke="#FCD34D" stroke-width="5" stroke-linecap="round" transform="rotate(0 100 100)" />
                         <line x1="100" y1="50" x2="100" y2="30" stroke="#FCD34D" stroke-width="5" stroke-linecap="round" transform="rotate(30 100 100)" />
                         <line x1="100" y1="50" x2="100" y2="30" stroke="#FCD34D" stroke-width="5" stroke-linecap="round" transform="rotate(60 100 100)" />
@@ -189,9 +139,7 @@
                         <line x1="100" y1="50" x2="100" y2="30" stroke="#FCD34D" stroke-width="5" stroke-linecap="round" transform="rotate(330 100 100)" />
                     </g>
                 </svg>
-                
                 <div class="w-28 h-28 bg-gradient-to-br from-yellow-300 to-orange-300 rounded-full shadow-lg flex items-center justify-center z-10 relative">
-                    <!-- Rosto do solzinho -->
                     <div class="flex flex-col items-center gap-1 opacity-60">
                        <div class="flex gap-4">
                           <div class="w-2 h-2 bg-orange-700 rounded-full"></div>
@@ -199,92 +147,65 @@
                        </div>
                        <div class="w-4 h-2 border-b-2 border-orange-700 rounded-full"></div>
                     </div>
-                    <div class="absolute top-14 left-5 w-3 h-2 bg-red-300 rounded-full opacity-50 blur-[1px]"></div>
-                    <div class="absolute top-14 right-5 w-3 h-2 bg-red-300 rounded-full opacity-50 blur-[1px]"></div>
                 </div>
             </div>
-
-            <!-- Nome e Título -->
             <div class="text-center -mt-8 relative z-20">
-                <h1 class="font-script text-6xl text-orange-400 mb-0 drop-shadow-sm" style="text-shadow: 2px 2px 0px #fff;">
-                    Anthony Gabriel
-                </h1>
-                <p class="font-body text-orange-300 text-lg tracking-[0.2em] font-bold mt-1 uppercase">
-                    1 Aninho
-                </p>
-                <p class="font-body text-orange-400/80 font-bold mt-4 text-lg">
-                    Um convite especial para você!
-                </p>
+                <h1 class="font-script text-6xl text-orange-400 mb-0 drop-shadow-sm" style="text-shadow: 2px 2px 0px #fff;">Anthony Gabriel</h1>
+                <p class="font-body text-orange-300 text-lg tracking-[0.2em] font-bold mt-1 uppercase">1 Aninho</p>
+                <p class="font-body text-orange-400/80 font-bold mt-4 text-lg">Um convite especial para você!</p>
             </div>
         </div>
 
-        <!-- Área Central com Envelope e GIF -->
-        <div class="flex-1 flex flex-col items-center justify-center w-full relative">
+        <!-- Área Central -->
+        <div class="flex-1 flex flex-col items-center justify-center w-full relative mb-10">
             
-            <!-- GIF do Personagem -->
-            <div class="absolute bottom-[40px] left-[-10px] sm:bottom-[-20px] sm:left-[-30px] gif-layer z-30">
-                 <img src="anthony.gif" alt="Bebê com balão" class="w-32 sm:w-40 h-auto remove-bg transform -rotate-3 transition-transform hover:scale-110 duration-300">
+            <!-- GIF Personagem -->
+            <!-- CORREÇÃO: Posição ajustada para ser relativa ao container, evitando cortar em telas pequenas -->
+            <div class="absolute bottom-[20px] left-[-20px] sm:bottom-[-20px] sm:left-[-30px] gif-layer z-30">
+                 <!-- Adicionei max-w e object-contain para garantir que não estoure -->
+                 <img src="anthony.gif" alt="Bebê com balão" class="w-32 sm:w-40 h-auto remove-bg transform -rotate-3 transition-transform hover:scale-110 duration-300 object-contain">
             </div>
 
-            <!-- Envelope Interativo -->
-            <button onclick="openEnvelope()" class="relative group cursor-pointer mt-8 transition-transform hover:scale-105 active:scale-95 z-10">
-                <!-- Wrapper que treme no hover (animate-wiggle) -->
-                <div class="animate-wiggle relative w-[320px] h-[220px] bg-[#FFF8E7] rounded-lg shadow-xl border border-orange-100 flex items-center justify-center overflow-hidden">
+            <!-- Envelope -->
+            <button onclick="openEnvelope()" class="relative group cursor-pointer mt-4 transition-transform hover:scale-105 active:scale-95 z-10 tap-highlight-transparent">
+                <div class="animate-wiggle relative w-[300px] h-[200px] sm:w-[320px] sm:h-[220px] bg-[#FFF8E7] rounded-lg shadow-xl border border-orange-100 flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]"></div>
-                    
-                    <!-- Envelope Parts -->
-                    <div class="absolute top-0 left-0 w-full h-0 border-l-[160px] border-r-[160px] border-t-[130px] border-l-transparent border-r-transparent border-t-[#F3E5AB] origin-top transform group-hover:scale-y-95 transition-transform duration-500 z-20 shadow-sm"></div>
-                    <div class="absolute bottom-0 left-0 w-full h-full border-l-[160px] border-r-[160px] border-b-[110px] border-l-[#FAEBD7] border-r-[#FAEBD7] border-b-[#F5DEB3] border-t-transparent z-10 pointer-events-none"></div>
-
-                    <!-- Selo -->
+                    <div class="absolute top-0 left-0 w-full h-0 border-l-[150px] border-r-[150px] border-t-[120px] sm:border-l-[160px] sm:border-r-[160px] sm:border-t-[130px] border-l-transparent border-r-transparent border-t-[#F3E5AB] origin-top transform group-hover:scale-y-95 transition-transform duration-500 z-20 shadow-sm"></div>
+                    <div class="absolute bottom-0 left-0 w-full h-full border-l-[150px] border-r-[150px] border-b-[100px] sm:border-l-[160px] sm:border-r-[160px] sm:border-b-[110px] border-l-[#FAEBD7] border-r-[#FAEBD7] border-b-[#F5DEB3] border-t-transparent z-10 pointer-events-none"></div>
                     <div class="absolute z-30 top-[85px] bg-[#C5A059] w-14 h-14 rounded-full shadow-lg flex items-center justify-center border-[3px] border-[#B08D4A] group-hover:scale-110 transition-transform">
                        <div class="w-10 h-10 border border-[#B08D4A]/50 rounded-full flex items-center justify-center">
                          <span class="font-script text-white text-2xl pt-1">A</span>
                        </div>
                     </div>
-
-                    <p class="absolute -bottom-10 left-0 right-0 text-center text-orange-300 font-body text-sm font-bold uppercase tracking-widest animate-pulse">
-                      Toque para abrir
-                    </p>
+                    <p class="absolute -bottom-10 left-0 right-0 text-center text-orange-300 font-body text-sm font-bold uppercase tracking-widest animate-pulse">Toque para abrir</p>
                 </div>
             </button>
         </div>
     </div>
 
-    <!-- TELA 2: CONVITE (Inicialmente Oculto) -->
-    <div id="invitation-screen" class="hidden-custom z-10 w-full max-w-md bg-[#FFFDF7] shadow-2xl rounded-[40px] overflow-hidden m-4 relative border-4 border-white opacity-0 transform translate-y-20">
+    <!-- TELA 2: CONVITE -->
+    <div id="invitation-screen" class="hidden-custom z-10 w-full max-w-md bg-[#FFFDF7] shadow-2xl rounded-[40px] overflow-hidden m-4 relative border-4 border-white opacity-0 transform translate-y-20 pb-4">
         
         <div class="absolute inset-2 border border-orange-200 rounded-[32px] pointer-events-none z-20"></div>
 
-        <!-- Conteúdo do Convite com Animação em Cascata (Stagger) -->
         <div class="p-8 flex flex-col items-center text-center relative overflow-hidden z-10">
             <div class="absolute -top-16 -right-16 text-yellow-100/80 animate-spin-slower">
                <i data-lucide="sun" width="200" height="200" fill="currentColor"></i>
             </div>
-
-            <!-- Ícone Sol -->
             <div class="opacity-0 fade-in-up stagger-1 bg-orange-100 p-3 rounded-full mb-2 shadow-inner z-10">
                 <i data-lucide="sun" width="32" height="32" class="text-orange-400" fill="#FBbf24"></i>
             </div>
-
-            <!-- Título -->
             <h1 class="opacity-0 fade-in-up stagger-2 font-script text-5xl text-orange-500 mb-1 drop-shadow-sm z-10">Anthony Gabriel</h1>
-            
-            <!-- Linhas -->
             <div class="opacity-0 fade-in-up stagger-2 w-full flex justify-center items-center gap-3 mb-6 opacity-80 z-10">
                <div class="h-px w-8 bg-orange-300"></div>
                <span class="font-body text-orange-400 text-[10px] font-bold tracking-[0.2em]">PRIMEIRA VOLTA AO SOL</span>
                <div class="h-px w-8 bg-orange-300"></div>
             </div>
-
-            <!-- Texto -->
             <p class="opacity-0 fade-in-up stagger-3 font-body text-gray-600 text-sm leading-relaxed mb-6 px-2 z-10">
               Entre risadas, aprendizados e muito amor, completei minha primeira volta ao sol. <br/>
               <span class="font-bold text-orange-400">E você é meu convidado especial!</span>
             </p>
-
-            <!-- Data Box -->
-            <div class="opacity-0 fade-in-up stagger-4 flex w-full justify-between items-center bg-orange-50/80 backdrop-blur-sm rounded-2xl p-4 mb-6 border border-orange-100 shadow-sm z-10 transform transition hover:scale-105 duration-300">
+            <div class="opacity-0 fade-in-up stagger-4 flex w-full justify-between items-center bg-orange-50/80 backdrop-blur-sm rounded-2xl p-4 mb-6 border border-orange-100 shadow-sm z-10">
               <div class="flex flex-col items-start">
                 <span class="font-body text-orange-300 text-[10px] uppercase font-bold tracking-wider">Fevereiro</span>
                 <span class="font-body text-gray-600 text-sm font-semibold">Domingo</span>
@@ -295,70 +216,19 @@
                 <span class="font-body text-gray-600 text-sm font-semibold">Às 14:00h</span>
               </div>
             </div>
-
-            <!-- Contagem Regressiva -->
             <div class="opacity-0 fade-in-up stagger-5 w-full mb-6 relative z-10">
                 <p class="text-center font-body text-orange-300 text-[10px] uppercase font-bold tracking-widest mb-2">Faltam apenas</p>
                 <div class="flex justify-center gap-2 sm:gap-3" id="countdown-timer">
-                    <!-- Dias -->
-                    <div class="flex flex-col items-center bg-orange-50 rounded-lg p-2 min-w-[50px] border border-orange-100 shadow-sm">
-                        <span class="font-script text-xl text-orange-500 leading-none" id="days">00</span>
-                        <span class="text-[8px] uppercase font-bold text-orange-300 mt-1">Dias</span>
-                    </div>
-                    <!-- Horas -->
-                    <div class="flex flex-col items-center bg-orange-50 rounded-lg p-2 min-w-[50px] border border-orange-100 shadow-sm">
-                        <span class="font-script text-xl text-orange-500 leading-none" id="hours">00</span>
-                        <span class="text-[8px] uppercase font-bold text-orange-300 mt-1">Hrs</span>
-                    </div>
-                    <!-- Minutos -->
-                    <div class="flex flex-col items-center bg-orange-50 rounded-lg p-2 min-w-[50px] border border-orange-100 shadow-sm">
-                        <span class="font-script text-xl text-orange-500 leading-none" id="minutes">00</span>
-                        <span class="text-[8px] uppercase font-bold text-orange-300 mt-1">Min</span>
-                    </div>
-                    <!-- Segundos -->
-                    <div class="flex flex-col items-center bg-orange-50 rounded-lg p-2 min-w-[50px] border border-orange-100 shadow-sm">
-                        <span class="font-script text-xl text-orange-500 leading-none" id="seconds">00</span>
-                        <span class="text-[8px] uppercase font-bold text-orange-300 mt-1">Seg</span>
-                    </div>
+                    <div class="flex flex-col items-center bg-orange-50 rounded-lg p-2 min-w-[50px] border border-orange-100 shadow-sm"><span class="font-script text-xl text-orange-500 leading-none" id="days">00</span><span class="text-[8px] uppercase font-bold text-orange-300 mt-1">Dias</span></div>
+                    <div class="flex flex-col items-center bg-orange-50 rounded-lg p-2 min-w-[50px] border border-orange-100 shadow-sm"><span class="font-script text-xl text-orange-500 leading-none" id="hours">00</span><span class="text-[8px] uppercase font-bold text-orange-300 mt-1">Hrs</span></div>
+                    <div class="flex flex-col items-center bg-orange-50 rounded-lg p-2 min-w-[50px] border border-orange-100 shadow-sm"><span class="font-script text-xl text-orange-500 leading-none" id="minutes">00</span><span class="text-[8px] uppercase font-bold text-orange-300 mt-1">Min</span></div>
+                    <div class="flex flex-col items-center bg-orange-50 rounded-lg p-2 min-w-[50px] border border-orange-100 shadow-sm"><span class="font-script text-xl text-orange-500 leading-none" id="seconds">00</span><span class="text-[8px] uppercase font-bold text-orange-300 mt-1">Seg</span></div>
                 </div>
             </div>
-
-            <!-- Botões de Ação -->
             <div class="opacity-0 fade-in-up stagger-6 grid grid-cols-3 gap-3 w-full z-10">
-              <!-- Confirmar -->
-              <a href="http://wa.me/+5581991879056" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 group cursor-pointer no-underline">
-                <div class="w-14 h-14 rounded-2xl bg-[#E6F4EA] flex items-center justify-center text-[#1E8E3E] shadow-sm transition-all hover:scale-110 hover:shadow-md border border-[#CEEAD6]">
-                  <i data-lucide="message-circle" width="22" stroke-width="2.5"></i>
-                </div>
-                <span class="font-body text-[10px] font-bold text-gray-500 uppercase tracking-wide group-hover:text-[#1E8E3E]">Confirmar</span>
-              </a>
-
-              <!-- Presentes -->
-              <button onclick="openGifts()" class="flex flex-col items-center gap-2 group cursor-pointer border-none bg-transparent p-0">
-                <div class="w-14 h-14 rounded-2xl bg-[#FEF7E0] flex items-center justify-center text-[#F9AB00] shadow-sm transition-all hover:scale-110 hover:shadow-md border border-[#FCE8B2]">
-                  <i data-lucide="gift" width="22" stroke-width="2.5"></i>
-                </div>
-                <span class="font-body text-[10px] font-bold text-gray-500 uppercase tracking-wide group-hover:text-[#F9AB00]">Presentes</span>
-              </button>
-
-              <!-- Local (Botão de Vídeo) -->
-              <button onclick="openVideo()" class="flex flex-col items-center gap-2 group cursor-pointer border-none bg-transparent p-0">
-                <div class="w-14 h-14 rounded-2xl bg-[#FCE8E6] flex items-center justify-center text-[#D93025] shadow-sm transition-all hover:scale-110 hover:shadow-md border border-[#FAD2CF]">
-                  <i data-lucide="map-pin" width="22" stroke-width="2.5"></i>
-                </div>
-                <span class="font-body text-[10px] font-bold text-gray-500 uppercase tracking-wide group-hover:text-[#D93025]">Local</span>
-              </button>
-            </div>
-
-            <div class="opacity-0 fade-in-up stagger-6 mt-8 text-[10px] text-orange-300 font-body uppercase tracking-[0.2em] font-bold z-10">
-              Sua presença é um presente!
-            </div>
-            
-             <!-- Créditos Escondidos -->
-            <div class="opacity-0 fade-in-up stagger-6 mt-4 z-10">
-                <a href="https://wa.me/+5581993600558" target="_blank" class="font-body text-[6px] text-orange-200/50 hover:text-orange-400 transition-colors duration-300 no-underline cursor-default">
-                    Criado pelo Tio Gabriel Ricardo
-                </a>
+              <a href="http://wa.me/+5581991879056" target="_blank" class="flex flex-col items-center gap-2 group cursor-pointer no-underline"><div class="w-14 h-14 rounded-2xl bg-[#E6F4EA] flex items-center justify-center text-[#1E8E3E] shadow-sm border border-[#CEEAD6]"><i data-lucide="message-circle" width="22"></i></div><span class="font-body text-[10px] font-bold text-gray-500 uppercase">Confirmar</span></a>
+              <button onclick="openGifts()" class="flex flex-col items-center gap-2 group cursor-pointer border-none bg-transparent p-0"><div class="w-14 h-14 rounded-2xl bg-[#FEF7E0] flex items-center justify-center text-[#F9AB00] shadow-sm border border-[#FCE8B2]"><i data-lucide="gift" width="22"></i></div><span class="font-body text-[10px] font-bold text-gray-500 uppercase">Presentes</span></button>
+              <button onclick="openVideo()" class="flex flex-col items-center gap-2 group cursor-pointer border-none bg-transparent p-0"><div class="w-14 h-14 rounded-2xl bg-[#FCE8E6] flex items-center justify-center text-[#D93025] shadow-sm border border-[#FAD2CF]"><i data-lucide="map-pin" width="22"></i></div><span class="font-body text-[10px] font-bold text-gray-500 uppercase">Local</span></button>
             </div>
         </div>
     </div>
@@ -366,85 +236,45 @@
     <!-- TELA 3: MODAL LISTA DE PRESENTES -->
     <div id="gift-modal" class="hidden-custom fixed inset-0 z-50 flex items-center justify-center p-4 bg-orange-900/20 backdrop-blur-sm transition-opacity duration-300">
         <div id="gift-modal-content" class="bg-[#FFFDF7] w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden relative border-4 border-white transform scale-90 opacity-0 transition-all duration-300">
-            
-            <div class="bg-orange-300 p-6 text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <button onclick="closeGifts()" class="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-colors z-20 cursor-pointer border-none bg-transparent">
-                    <i data-lucide="x" width="24"></i>
-                </button>
-                
-                <div class="relative z-10 mt-2">
-                    <h3 class="font-script text-3xl text-white drop-shadow-md mb-1">Sugestões</h3>
-                    <p class="font-body text-white/90 text-xs uppercase tracking-widest font-bold">Lista de Presentes</p>
-                </div>
-            </div>
-
+            <div class="bg-orange-300 p-6 text-center relative"><button onclick="closeGifts()" class="absolute top-4 right-4 text-white/80"><i data-lucide="x" width="24"></i></button><h3 class="font-script text-3xl text-white">Sugestões</h3><p class="font-body text-white/90 text-xs uppercase font-bold">Lista de Presentes</p></div>
             <div class="pt-6 pb-8 px-6 bg-[#FFFDF7]">
                 <div class="grid grid-cols-2 gap-3">
-                    
-                    <!-- Item 1: Roupas -->
-                    <div class="bg-orange-50 rounded-2xl p-4 flex flex-col items-center text-center border border-orange-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 transform hover:scale-105 duration-200">
-                        <div class="w-16 h-16 mb-2 flex items-center justify-center overflow-hidden rounded-lg">
-                           <img src="https://cea.vtexassets.com/arquivos/ids/59291931/Foto-0.jpg?v=638979457210270000" alt="Roupas" class="w-full h-full object-cover remove-bg">
-                        </div>
-                        <span class="font-body font-bold text-gray-700 text-sm">Roupas</span>
-                        <span class="font-body text-orange-400 text-xs font-semibold mt-1 bg-orange-50 px-2 py-0.5 rounded-full">Tam 2 anos</span>
-                    </div>
-
-                    <!-- Item 2: Sapatos -->
-                    <div class="bg-orange-50 rounded-2xl p-4 flex flex-col items-center text-center border border-orange-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 transform hover:scale-105 duration-200">
-                         <div class="w-16 h-16 mb-2 flex items-center justify-center overflow-hidden rounded-lg">
-                           <img src="https://i.ibb.co/2YyDrmbc/sapatos.png" alt="Nike Air Force" class="w-full h-full object-contain remove-bg">
-                        </div>
-                        <span class="font-body font-bold text-gray-700 text-sm">Sapatos</span>
-                        <span class="font-body text-orange-400 text-xs font-semibold mt-1 bg-orange-50 px-2 py-0.5 rounded-full">Nº 22/23</span>
-                    </div>
-
-                    <!-- Item 3: Higiene -->
-                    <div class="bg-orange-50 rounded-2xl p-4 flex flex-col items-center text-center border border-orange-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 transform hover:scale-105 duration-200">
-                         <div class="w-16 h-16 mb-2 flex items-center justify-center overflow-hidden rounded-lg">
-                           <img src="https://production.na01.natura.com/on/demandware.static/-/Sites-natura-br-storefront-catalog/default/dw967a5ceb/NATBRA-218198_1.jpg" alt="Kit Natura" class="w-full h-full object-contain remove-bg">
-                        </div>
-                        <span class="font-body font-bold text-gray-700 text-sm">Higiene</span>
-                        <span class="font-body text-orange-400 text-xs font-semibold mt-1 bg-orange-50 px-2 py-0.5 rounded-full">Mamãe e Bebê</span>
-                    </div>
-
-                </div>
-
-                <div class="mt-8 flex justify-center">
-                    <div class="flex items-center gap-2 text-orange-300/80 animate-pulse">
-                       <i data-lucide="heart" width="14" fill="currentColor"></i>
-                       <span class="font-script text-lg">Obrigado pelo carinho!</span>
-                       <i data-lucide="heart" width="14" fill="currentColor"></i>
-                    </div>
+                    <div class="bg-orange-50 rounded-2xl p-4 flex flex-col items-center text-center border border-orange-100 shadow-sm"><div class="w-16 h-16 mb-2 flex items-center justify-center overflow-hidden rounded-lg"><img src="https://cea.vtexassets.com/arquivos/ids/59291931/Foto-0.jpg?v=638979457210270000" class="w-full h-full object-cover remove-bg"></div><span class="font-body font-bold text-gray-700 text-sm">Roupas</span><span class="font-body text-orange-400 text-xs mt-1 bg-orange-50 px-2 rounded-full">Tam 2 anos</span></div>
+                    <div class="bg-orange-50 rounded-2xl p-4 flex flex-col items-center text-center border border-orange-100 shadow-sm"><div class="w-16 h-16 mb-2 flex items-center justify-center overflow-hidden rounded-lg"><img src="https://i.ibb.co/2YyDrmbc/sapatos.png" class="w-full h-full object-contain remove-bg"></div><span class="font-body font-bold text-gray-700 text-sm">Sapatos</span><span class="font-body text-orange-400 text-xs mt-1 bg-orange-50 px-2 rounded-full">Nº 22/23</span></div>
+                    <div class="bg-orange-50 rounded-2xl p-4 flex flex-col items-center text-center border border-orange-100 shadow-sm"><div class="w-16 h-16 mb-2 flex items-center justify-center overflow-hidden rounded-lg"><img src="https://production.na01.natura.com/on/demandware.static/-/Sites-natura-br-storefront-catalog/default/dw967a5ceb/NATBRA-218198_1.jpg" class="w-full h-full object-contain remove-bg"></div><span class="font-body font-bold text-gray-700 text-sm">Higiene</span><span class="font-body text-orange-400 text-xs mt-1 bg-orange-50 px-2 rounded-full">Mamãe e Bebê</span></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TELA 4: MODAL VIDEO LOCAL -->
-    <!-- CORREÇÃO IPHONE: Usando classe invisible-modal ao invés de hidden-custom -->
-    <div id="video-modal" class="invisible-modal fixed inset-0 flex items-center justify-center p-4 bg-orange-900/40 backdrop-blur-sm transition-opacity duration-300">
+    <!-- TELA 4: MODAL VIDEO -->
+    <div id="video-modal" class="invisible-modal fixed inset-0 flex items-center justify-center p-4 bg-orange-900/60 backdrop-blur-md transition-opacity duration-300">
         <div id="video-modal-content" class="bg-black w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden relative border-4 border-white transform scale-90 opacity-0 transition-all duration-300 flex flex-col">
             
-            <div class="relative w-full aspect-[9/16] bg-black">
-                <button onclick="closeVideo()" class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-2 transition-colors z-20 cursor-pointer border-none backdrop-blur-md">
+            <div class="relative w-full aspect-[9/16] bg-black flex items-center justify-center">
+                <button onclick="closeVideo()" class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-2 transition-colors z-30 cursor-pointer border-none backdrop-blur-md">
                     <i data-lucide="x" width="24"></i>
                 </button>
                 
-                <!-- Video Player Local -->
-                <!-- Importante: O arquivo local.mp4 deve estar exatamente com esse nome (maiúsculas/minúsculas importam no GitHub Pages) -->
-                <video id="location-video" class="w-full h-full object-cover" controls playsinline webkit-playsinline preload="auto">
+                <!-- Loading State -->
+                <div id="video-loader" class="absolute inset-0 flex items-center justify-center text-white/50 z-0">
+                    <div class="flex flex-col items-center gap-2">
+                        <i data-lucide="loader-2" class="animate-spin" width="32"></i>
+                        <span class="text-xs font-body">Carregando vídeo...</span>
+                    </div>
+                </div>
+
+                <!-- CORREÇÃO VÍDEO IPHONE: playsinline, webkit-playsinline e carregamento forçado no JS -->
+                <video id="location-video" class="w-full h-full object-cover relative z-10" controls playsinline webkit-playsinline preload="none">
                     <source src="local.mp4" type="video/mp4">
-                    Seu navegador não suporta o elemento de vídeo.
+                    <p class="text-white text-center p-4">Seu navegador não suporta este vídeo.</p>
                 </video>
             </div>
             
             <div class="p-6 bg-white text-center flex flex-col items-center gap-3">
                  <p class="font-body text-orange-400 font-bold text-sm">Nos vemos lá!</p>
-                 <a href="https://www.instagram.com/espacovilario/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-md hover:scale-105 transition-transform no-underline">
-                    <i data-lucide="instagram" width="16"></i>
-                    @espacovilario
+                 <a href="https://www.instagram.com/espacovilario/" target="_blank" class="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-md hover:scale-105 transition-transform no-underline">
+                    <i data-lucide="instagram" width="16"></i> @espacovilario
                  </a>
             </div>
         </div>
@@ -457,61 +287,36 @@
         const invitationScreen = document.getElementById('invitation-screen');
         const giftModal = document.getElementById('gift-modal');
         const giftModalContent = document.getElementById('gift-modal-content');
-        
-        // Elementos do Modal de Vídeo
         const videoModal = document.getElementById('video-modal');
         const videoModalContent = document.getElementById('video-modal-content');
         const locationVideo = document.getElementById('location-video');
+        const videoLoader = document.getElementById('video-loader');
 
-        // --- Lógica de Contagem Regressiva ---
-        const eventDate = new Date();
-        const currentYear = eventDate.getFullYear();
-        let targetDate = new Date(currentYear, 1, 22, 14, 0, 0); // Mês 1 = Fevereiro
-        
-        if (new Date() > targetDate) {
-            targetDate.setFullYear(currentYear + 1);
-        }
+        // Contagem Regressiva
+        const currentYear = new Date().getFullYear();
+        let targetDate = new Date(currentYear, 1, 22, 14, 0, 0);
+        if (new Date() > targetDate) targetDate.setFullYear(currentYear + 1);
 
         function updateCountdown() {
             const now = new Date();
             const diff = targetDate - now;
-
             if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                document.getElementById('days').innerText = String(days).padStart(2, '0');
-                document.getElementById('hours').innerText = String(hours).padStart(2, '0');
-                document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
-                document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('days').innerText = String(d).padStart(2, '0');
+                document.getElementById('hours').innerText = String(h).padStart(2, '0');
+                document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+                document.getElementById('seconds').innerText = String(s).padStart(2, '0');
             }
         }
-        
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
         function openEnvelope() {
-            var count = 200;
-            var defaults = {
-                origin: { y: 0.7 }
-            };
-
-            function fire(particleRatio, opts) {
-                confetti(Object.assign({}, defaults, opts, {
-                    particleCount: Math.floor(count * particleRatio)
-                }));
-            }
-
-            fire(0.25, { spread: 26, startVelocity: 55 });
-            fire(0.2, { spread: 60 });
-            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-            fire(0.1, { spread: 120, startVelocity: 45 });
-
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             envelopeScreen.classList.add('fade-out-up');
-            
             setTimeout(() => {
                 envelopeScreen.classList.add('hidden-custom');
                 invitationScreen.classList.remove('hidden-custom');
@@ -530,61 +335,57 @@
         function closeGifts() {
             giftModalContent.classList.remove('scale-100', 'opacity-100');
             giftModalContent.classList.add('scale-90', 'opacity-0');
-            setTimeout(() => {
-                giftModal.classList.add('hidden-custom');
-            }, 300);
+            setTimeout(() => { giftModal.classList.add('hidden-custom'); }, 300);
         }
 
         function openVideo() {
-            // CORREÇÃO IPHONE: Trocando classes de visibilidade em vez de display
-            // Remove a classe invisivel
+            // 1. Torna o modal visível
             videoModal.classList.remove('invisible-modal');
             videoModal.classList.add('visible-modal');
             
-            // Força o Safari a reconhecer o vídeo se ele estiver "dormindo"
-            if (locationVideo.readyState === 0) {
-                locationVideo.load();
-            }
-
-            // Tenta o play
-            var playPromise = locationVideo.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Autoplay impedido ou falha no load:", error);
-                    // O vídeo vai aparecer com o botão de play nativo, o usuário pode clicar manualmente
-                });
-            }
-
+            // 2. Anima a entrada do modal
             setTimeout(() => {
                 videoModalContent.classList.remove('scale-90', 'opacity-0');
                 videoModalContent.classList.add('scale-100', 'opacity-100');
             }, 10);
+
+            // 3. TRUQUE IPHONE: Forçar recarregamento apenas se não estiver pronto
+            // Se estiver "tela preta", o readyState geralmente é 0
+            if (locationVideo.readyState === 0) {
+                locationVideo.load(); 
+            }
+
+            // 4. Tenta o play
+            const playPromise = locationVideo.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Vídeo começou a tocar com sucesso
+                    videoLoader.style.display = 'none';
+                }).catch(error => {
+                    console.log("Autoplay bloqueado (normal no iPhone modo eco):", error);
+                    // O loader fica até o usuário clicar no play nativo
+                });
+            }
+            
+            // Listener para esconder o loader quando começar a tocar de verdade
+            locationVideo.onplaying = () => { videoLoader.style.display = 'none'; };
         }
 
         function closeVideo() {
             locationVideo.pause();
             videoModalContent.classList.remove('scale-100', 'opacity-100');
             videoModalContent.classList.add('scale-90', 'opacity-0');
-            
-            // Espera a animação para esconder
             setTimeout(() => {
                 videoModal.classList.remove('visible-modal');
                 videoModal.classList.add('invisible-modal');
+                // Opcional: Resetar para não gastar dados em background
+                // locationVideo.currentTime = 0; 
             }, 300);
         }
 
-        giftModal.addEventListener('click', (e) => {
-            if (e.target === giftModal) {
-                closeGifts();
-            }
-        });
-
-        videoModal.addEventListener('click', (e) => {
-            if (e.target === videoModal) {
-                closeVideo();
-            }
-        });
+        // Fechar ao clicar fora
+        giftModal.addEventListener('click', (e) => { if (e.target === giftModal) closeGifts(); });
+        videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideo(); });
     </script>
 </body>
 </html>
