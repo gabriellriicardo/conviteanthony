@@ -97,8 +97,6 @@
         .gif-layer { z-index: 20; pointer-events: none; }
     </style>
 </head>
-<!-- CORREÇÃO LAYOUT: min-h-[100dvh] usa a altura dinâmica do viewport mobile, ignorando a barra de endereço -->
-<!-- overflow-y-auto permite rolar se a tela for muito pequena (iPhone SE) -->
 <body class="min-h-[100dvh] bg-[#FFF9F0] font-sans overflow-x-hidden overflow-y-auto flex items-center justify-center relative selection:bg-orange-200 supports-[min-height:100dvh]:min-h-[100dvh]">
 
     <!-- Background -->
@@ -113,7 +111,6 @@
     </div>
 
     <!-- TELA 1: ENVELOPE -->
-    <!-- CORREÇÃO: pb-20 adiciona espaço no rodapé para o boneco não cortar no iPhone -->
     <div id="envelope-screen" class="z-10 flex flex-col items-center justify-between w-full h-full min-h-[100dvh] py-8 px-4 relative max-w-lg mx-auto transition-all duration-500 pb-24">
         
         <!-- Header -->
@@ -160,9 +157,7 @@
         <div class="flex-1 flex flex-col items-center justify-center w-full relative mb-10">
             
             <!-- GIF Personagem -->
-            <!-- CORREÇÃO: Posição ajustada para ser relativa ao container, evitando cortar em telas pequenas -->
             <div class="absolute bottom-[20px] left-[-20px] sm:bottom-[-20px] sm:left-[-30px] gif-layer z-30">
-                 <!-- Adicionei max-w e object-contain para garantir que não estoure -->
                  <img src="anthony.gif" alt="Bebê com balão" class="w-32 sm:w-40 h-auto remove-bg transform -rotate-3 transition-transform hover:scale-110 duration-300 object-contain">
             </div>
 
@@ -252,7 +247,7 @@
         <div id="video-modal-content" class="bg-black w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden relative border-4 border-white transform scale-90 opacity-0 transition-all duration-300 flex flex-col">
             
             <div class="relative w-full aspect-[9/16] bg-black flex items-center justify-center">
-                <button onclick="closeVideo()" class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-2 transition-colors z-30 cursor-pointer border-none backdrop-blur-md">
+                <button onclick="closeVideo()" class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-2 transition-colors z-50 cursor-pointer border-none backdrop-blur-md">
                     <i data-lucide="x" width="24"></i>
                 </button>
                 
@@ -264,7 +259,15 @@
                     </div>
                 </div>
 
-                <!-- CORREÇÃO VÍDEO IPHONE: playsinline, webkit-playsinline e carregamento forçado no JS -->
+                <!-- PLAYER IPHONE: Iframe do Youtube (só aparece no iPhone) -->
+                <!-- Conversão do link Shorts para Embed: https://www.youtube.com/embed/N_ZrMmTSukM -->
+                <iframe id="youtube-video" class="w-full h-full absolute top-0 left-0 z-40 hidden" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+
+                <!-- PLAYER PADRÃO (Android/PC): Video Local -->
                 <video id="location-video" class="w-full h-full object-cover relative z-10" controls playsinline webkit-playsinline preload="none">
                     <source src="local.mp4" type="video/mp4">
                     <p class="text-white text-center p-4">Seu navegador não suporta este vídeo.</p>
@@ -290,7 +293,12 @@
         const videoModal = document.getElementById('video-modal');
         const videoModalContent = document.getElementById('video-modal-content');
         const locationVideo = document.getElementById('location-video');
+        const youtubeVideo = document.getElementById('youtube-video');
         const videoLoader = document.getElementById('video-loader');
+
+        // DETECÇÃO DE IPHONE
+        // Verifica se o User Agent contém iPhone ou iPod
+        const isIPhone = /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
         // Contagem Regressiva
         const currentYear = new Date().getFullYear();
@@ -349,37 +357,53 @@
                 videoModalContent.classList.add('scale-100', 'opacity-100');
             }, 10);
 
-            // 3. TRUQUE IPHONE: Forçar recarregamento apenas se não estiver pronto
-            // Se estiver "tela preta", o readyState geralmente é 0
-            if (locationVideo.readyState === 0) {
-                locationVideo.load(); 
-            }
+            // 3. Lógica de Seleção de Vídeo baseada no Dispositivo
+            if (isIPhone) {
+                // MODO IPHONE: Esconde Local, Mostra Youtube
+                locationVideo.style.display = 'none';
+                youtubeVideo.style.display = 'block';
+                videoLoader.style.display = 'none'; // Youtube carrega rápido geralmente
+                
+                // Define a URL com autoplay para garantir o play
+                // ID do vídeo: N_ZrMmTSukM
+                youtubeVideo.src = "https://www.youtube.com/embed/N_ZrMmTSukM?autoplay=1&rel=0&playsinline=1";
+                
+            } else {
+                // MODO OUTROS (Android/PC): Esconde Youtube, Mostra Local
+                youtubeVideo.style.display = 'none';
+                locationVideo.style.display = 'block';
 
-            // 4. Tenta o play
-            const playPromise = locationVideo.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    // Vídeo começou a tocar com sucesso
-                    videoLoader.style.display = 'none';
-                }).catch(error => {
-                    console.log("Autoplay bloqueado (normal no iPhone modo eco):", error);
-                    // O loader fica até o usuário clicar no play nativo
-                });
+                // Play no vídeo local
+                if (locationVideo.readyState === 0) {
+                    locationVideo.load(); 
+                }
+
+                const playPromise = locationVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        videoLoader.style.display = 'none';
+                    }).catch(error => {
+                        console.log("Autoplay bloqueado:", error);
+                    });
+                }
+                locationVideo.onplaying = () => { videoLoader.style.display = 'none'; };
             }
-            
-            // Listener para esconder o loader quando começar a tocar de verdade
-            locationVideo.onplaying = () => { videoLoader.style.display = 'none'; };
         }
 
         function closeVideo() {
+            // Pausa vídeo local
             locationVideo.pause();
+            
+            // Pausa vídeo do Youtube (removendo a fonte)
+            if (isIPhone) {
+                youtubeVideo.src = "";
+            }
+
             videoModalContent.classList.remove('scale-100', 'opacity-100');
             videoModalContent.classList.add('scale-90', 'opacity-0');
             setTimeout(() => {
                 videoModal.classList.remove('visible-modal');
                 videoModal.classList.add('invisible-modal');
-                // Opcional: Resetar para não gastar dados em background
-                // locationVideo.currentTime = 0; 
             }, 300);
         }
 
